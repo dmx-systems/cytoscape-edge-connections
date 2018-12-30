@@ -1,15 +1,15 @@
 cytoscape-edge-connections
-================================================================================
+==========================
 
 
 ## Description
 
 Allows edges to be connected to other edges, according to the Associative Model of Data ([demo](https://jri.github.io/cytoscape-edge-connections))
 
+
 ## Dependencies
 
  * Cytoscape.js ^3.2.0
- * <List your dependencies here please>
 
 
 ## Usage instructions
@@ -52,7 +52,13 @@ Plain HTML/JS has the extension registered for you automatically, because no `re
 
 ## API
 
-TODO describe the API of the extension here.
+5 methods are available:
+
+* `cy.addEdge()` adds an edge to the graph
+* `cy.addEdges()` adds all edges of the given array to the graph
+* `edge.auxNode()` returns an edge's aux node
+* `node.isAuxNode()` returns `true` if a node is an aux node, `false` otherwise
+* `node.edgeId()` returns the ID of the edge represented by an aux node; `undefined` if the node is not an aux node
 
 
 ## Build targets
@@ -77,3 +83,15 @@ This project is set up to automatically be published to npm and bower.  To publi
 1. Publish to npm: `npm publish .`
 1. If publishing to bower for the first time, you'll need to run `bower register cytoscape-edge-connections https://github.com/jri/cytoscape-edge-connections.git`
 1. [Make a new release](https://github.com/jri/cytoscape-edge-connections/releases/new) for Zenodo.
+
+
+## Version history
+
+**0.1** -- Dec 30, 2018
+
+* Initial version; functional
+
+
+------------
+Jörg Richter  
+Dec 30, 2018
