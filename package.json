@@ -1,10 +1,10 @@
 {
   "name": "cytoscape-edge-connections",
-  "version": "0.0.0",
-  "description": "Allows edges to be connected to other edges, according to the Associative Model of Data",
+  "version": "0.1.0",
+  "description": "A Cytoscape extension that allows edges to be connected to other edges, according to the Associative Model of Data",
   "main": "cytoscape-edge-connections.js",
   "author": {
-    "name": "Joerg Richter",
+    "name": "Jörg Richter",
     "email": "jri@dmx.berlin"
   },
   "scripts": {
