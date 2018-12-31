@@ -1,3 +1,5 @@
+const ROUND_LIMIT = 10
+
 let events = false    // tracks event handler registration ### TODO: drop it
 
 function register (cytoscape) {
@@ -22,39 +24,60 @@ if (typeof cytoscape !== 'undefined') {
 module.exports = register
 
 /**
- * @param   assoc     dm5.ViewAssoc
+ * @param   edge    Cytoscape edge (POJO); source and target IDs may refer to another edge
  */
-function addEdge (assoc) {
+function addEdge (edge) {
   eventHandlers(this)   // TODO: move to "init" call
-  if (!_addEdge(this, assoc)) {
+  if (!_addEdge(edge, this)) {
     throw Error(`edge can't be added to graph as a player does not exist ${JSON.stringify(assoc)}`)
   }
 }
 
 /**
- * @param   assocs    array of dm5.ViewAssoc
+ * @param   edges   array of Cytoscape edge (POJO); source and target IDs may refer to another edge
  */
-function addEdges (assocs) {
+function addEdges (edges) {
   eventHandlers(this)   // TODO: move to "init" call
   let rounds = 0
   do {
-    assocs = assocs.filter(assoc => !_addEdge(this, assoc))
-    rounds++
-  } while (assocs.length)
+    edges = edges.filter(edge => !_addEdge(edge, this))
+    if (++rounds === ROUND_LIMIT) {
+      throw Error(`too many add-edges rounds (limit is ${ROUND_LIMIT})`)
+    }
+  } while (edges.length)
   console.log(`${rounds} add-edges rounds`)
 }
 
 /**
- * @param   assoc   dm5.ViewAssoc
+ * @param   edge    Cytoscape edge (POJO).
+ *                  Source and target IDs may refer to another edge.
+ *                  Source and target IDs may be strings or numbers.
  */
-function _addEdge (cy, assoc) {
-  const id1 = nodeId(cy, assoc.role1)
-  const id2 = nodeId(cy, assoc.role2)
-  if (id1 !== undefined && id2 !== undefined) {
-    const edge = cy.add(cyEdge(assoc, id1, id2))
-    createAuxNode(cy, edge)
+function _addEdge (edge, cy) {
+  if (resolve(edge, 'source', cy) && resolve(edge, 'target', cy)) {
+    createAuxNode(cy, cy.add(edge))
     return true
   }
+}
+
+/**
+ * Resolves an edge end. The edge is manipulated in-place.
+ *
+ * @param     edge    Note: for the edge's source/target IDs both ist supported, string or number
+ * @param     end     the end to resolve: 'source' or 'target' (string)
+ *
+ * @return    true if the edge end could be resolved
+ */
+function resolve (edge, end, cy) {
+  const id = edge.data[end]
+  const ele = cy.getElementById(id.toString())
+  if (ele.empty()) {
+    return false
+  }
+  if (ele.isEdge()) {
+    edge.data[end] = auxNodeId(ele)
+  }
+  return true
 }
 
 /**
@@ -103,43 +126,6 @@ function repositionAuxNodes (node) {
 
 function removeAuxNode (edge) {
   edge.auxNode().remove()
-}
-
-/**
- * Builds a Cytoscape edge from a dm5.ViewAssoc
- *
- * Prerequisite: viewAssoc has 2 topic players specified by-ID. ### FIXDOC
- *
- * @param   viewAssoc   A dm5.ViewAssoc
- */
-function cyEdge (viewAssoc, id1, id2) {
-  return {
-    data: {
-      id:      viewAssoc.id,
-      typeUri: viewAssoc.typeUri,   // TODO: needed?
-      label:   viewAssoc.value,
-      color:   viewAssoc.getColor(),
-      source:  id1,
-      target:  id2,
-      viewAssoc
-    }
-  }
-}
-
-/**
- * @return    the ID of the node that represents the given player. For a topic player that is the topic ID (number);
- *            for an assoc player that is the ID of the assoc's aux node (string). If the assoc is not (yet) in the
- *            graph `undefined` is returned.
- */
-function nodeId (cy, player) {
-  const playerId = player.id
-  if (player.isTopicPlayer()) {
-    return playerId
-  }
-  const edge = cy.getElementById(playerId.toString())
-  if (edge.size() === 1) {
-    return auxNodeId(edge)
-  }
 }
 
 /**

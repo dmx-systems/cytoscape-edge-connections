@@ -65,7 +65,7 @@ require(['cytoscape', 'cytoscape-edge-connections'], function (cytoscape, edgeCo
 ## Build
 
 1. `npm install` : installs Webpack and Babel into `./node_modules`
-2. `npm run build` : builds `./src/**` into `./dist/cytoscape-edge-connections.js`
+2. `npm run build` : builds `./src/**` into `./dist/cytoscape-edge-connections.min.js`
 
 
 ## Version history
