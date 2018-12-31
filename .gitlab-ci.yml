@@ -1,0 +1,5 @@
+trigger_dmx_platform_build:
+  script:
+    - curl -X POST -F token=${DMX_PLATFORM_TOKEN} -F ref=master https://git.dmx.systems/api/v4/projects/13/trigger/pipeline
+  only:
+    - master
