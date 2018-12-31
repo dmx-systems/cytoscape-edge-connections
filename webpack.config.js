@@ -1,7 +1,6 @@
 module.exports = {
-  entry: './src/index.js',
   output: {
-    filename: 'cytoscape-edge-connections.js',
+    filename: 'cytoscape-edge-connections.min.js',
     library: 'cytoscapeEdgeConnections',
     libraryTarget: 'umd'
   },
