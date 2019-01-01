@@ -104,7 +104,7 @@ function createAuxNode (cy, edge) {
       x: (p1.x + p2.x) / 2,
       y: (p1.y + p2.y) / 2
     }
-  })
+  }).lock()
   edge.data('auxNodeId', auxNode.id())    // set edge->aux node ref
 }
 
@@ -123,7 +123,7 @@ function repositionAuxNodes (node) {
     // (x and y are NaN). If a node is positioned to such an invalid position its canvas representation becomes corrupt
     // (drawImage() throws "InvalidStateError: The object is in an invalid state" then).
     if (isValidPos(midpoint)) {
-      edge.auxNode().position(midpoint)
+      edge.auxNode().unlock().position(midpoint).lock()
     }
   })
 }
