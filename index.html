@@ -1,7 +1,7 @@
 <!DOCTYPE>
 <html>
   <head>
-    <title>cytoscape-edge-connections.js demo</title>
+    <title>cytoscape-edge-connections demo</title>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
     <script src="dist/cytoscape-edge-connections.min.js"></script>
@@ -16,12 +16,6 @@
         top: 0;
         bottom: 0;
         right: 0;
-        z-index: 999;
-      }
-      h1 {
-        opacity: 0.5;
-        font-size: 1em;
-        font-weight: bold;
       }
     </style>
     <script>
@@ -30,42 +24,44 @@
           container: document.getElementById('cy'),
           style: [
             {
-              selector: 'node',
+              selector: 'node[^edgeId]',
               style: {
-                'content': 'data(name)'
+                'label': 'data(id)'
+              }
+            },
+            {
+              selector: 'node[edgeId]',
+              style: {
+                'width': 10,
+                'height': 10
               }
             },
             {
               selector: 'edge',
               style: {
-                'curve-style': 'bezier',
-                'target-arrow-shape': 'triangle'
+                'curve-style': 'bezier'
               }
             }
           ],
           elements: {
             nodes: [
-              {data: {id: 'j', name: 'Jerry'}},
-              {data: {id: 'e', name: 'Elaine'}},
-              {data: {id: 'k', name: 'Kramer'}},
-              {data: {id: 'g', name: 'George'}}
-            ],
-            edges: [
-              {data: {source: 'j', target: 'e'}},
-              {data: {source: 'j', target: 'k'}},
-              {data: {source: 'j', target: 'g'}},
-              {data: {source: 'e', target: 'j'}},
-              {data: {source: 'e', target: 'k'}},
-              {data: {source: 'k', target: 'j'}},
-              {data: {source: 'k', target: 'e'}},
-              {data: {source: 'k', target: 'g'}},
-              {data: {source: 'g', target: 'j'}}
+              {data: {id: 1}, position: {x: 240, y:  60}},
+              {data: {id: 2}, position: {x:  30, y:  80}},
+              {data: {id: 3}, position: {x: 100, y: 200}},
+              {data: {id: 4}, position: {x: 110, y: 140}}
             ]
+          },
+          layout: {
+            name: 'preset'
           }
         });
-        // TODO: demo your core ext
-        console.log('cytoscapeEdgeConnections', cytoscapeEdgeConnections)
-        console.log('cy.addEdges', cy.addEdges)
+        cy.edgeConnections()
+        cy.addEdges([
+          {data: {id:  12, source: 1, target:  2}},
+          {data: {id:  23, source: 2, target:  3}},
+          {data: {id:  31, source: 3, target:  1}},
+          {data: {id: 412, source: 4, target: 12}}
+        ])
       });
     </script>
   </head>
