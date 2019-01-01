@@ -24,9 +24,6 @@
   },
   "homepage": "https://github.com/jri/cytoscape-edge-connections",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-preset-env": "^1.7.0",
     "webpack": "^4.28.3"
   },
   "peerDependencies": {
