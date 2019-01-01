@@ -1,7 +1,5 @@
 const ROUND_LIMIT = 10
 
-let events = false    // tracks event handler registration ### TODO: drop it
-
 function register (cytoscape) {
   // TODO: can this happen? Drop it?
   if (!cytoscape) {
@@ -9,6 +7,7 @@ function register (cytoscape) {
     return
   }
   // register extensions
+  cytoscape('core', 'edgeConnections', edgeConnections)
   cytoscape('core', 'addEdge', addEdge)
   cytoscape('core', 'addEdges', addEdges)
   cytoscape('collection', 'auxNode', auxNode)
@@ -23,11 +22,14 @@ if (typeof cytoscape !== 'undefined') {
 
 module.exports = register
 
+function edgeConnections () {
+  eventHandlers(this)
+}
+
 /**
  * @param   edge    Cytoscape edge (POJO); source and target IDs may refer to another edge
  */
 function addEdge (edge) {
-  eventHandlers(this)   // TODO: move to "init" call
   if (!_addEdge(edge, this)) {
     throw Error(`edge can't be added to graph as a player does not exist ${JSON.stringify(assoc)}`)
   }
@@ -37,7 +39,6 @@ function addEdge (edge) {
  * @param   edges   array of Cytoscape edge (POJO); source and target IDs may refer to another edge
  */
 function addEdges (edges) {
-  eventHandlers(this)   // TODO: move to "init" call
   let rounds = 0
   do {
     edges = edges.filter(edge => !_addEdge(edge, this))
@@ -102,15 +103,12 @@ function createAuxNode (cy, edge) {
 }
 
 function eventHandlers (cy) {
-  if (!events) {
-    // Note: for edge connecting edges aux node position changes must cascade.
-    // So the position event selector must capture both aux nodes and regular nodes.
-    // FIXME: also the edge handler node is captured, but should not be a problem.
-    cy.on('position', 'node', e => repositionAuxNodes(e.target))
-    // remove aux node when removing edge
-    cy.on('remove', 'edge[color]', e => removeAuxNode(e.target))    // TODO: add selector config
-    events = true
-  }
+  // Note: for edge connecting edges aux node position changes must cascade.
+  // So the position event selector must capture both aux nodes and regular nodes.
+  // FIXME: also the edge handler node is captured, but should not be a problem.
+  cy.on('position', 'node', e => repositionAuxNodes(e.target))
+  // remove aux node when removing edge
+  cy.on('remove', 'edge[color]', e => removeAuxNode(e.target))    // TODO: add selector config
 }
 
 function repositionAuxNodes (node) {
