@@ -2,7 +2,7 @@ cytoscape-edge-connections
 ==========================
 
 
-![cytoscape-edge-connections](demo.png)
+![cytoscape-edge-connections](img/demo.png)
 
 
 ## Description
@@ -18,6 +18,22 @@ Note: an edge is *not* represented as 2 edges with the aux node in between. Exis
 2. Cytoscape's advanced edge rendering capabilities (e.g. curved parallel edges) are leveraged.
 3. Cytoscape's layout algorithms are leveraged. Aux nodes are locked and do not participate in layout.
 
+## The Associative Model of Data
+
+Joseph V. Homan, Paul J. Kovacs -- A Comparison Of The Relational Database Model And The Associative Database Model (6 page article)  
+*Issues in Information Systems*, Volume X, No. 1, 2009  
+http://iacis.org/iis/2009/P2009_1301.pdf
+
+Simon Williams -- The Associative Model Of Data (24 page article)  
+*Journal of Database Marketing*, Volume 8, 4, 2001  
+https://link.springer.com/content/pdf/10.1057/palgrave.jdm.3240049.pdf
+
+Simon Williams -- The Associative Model Of Data (book, 284 pages)  
+*Lazy Software*, 2nd edition, 2002  
+http://www.sentences.com/docs/other_docs/AMD.pdf
+
+![amd-schema](img/amd-schema.png)
+![amd-instances](img/amd-instances.png)
 
 ## Dependencies
 
@@ -89,7 +105,7 @@ The extension adds 2 core and 3 collection methods:
 * `node.isAuxNode()` returns `true` if the node is an aux node, `false` otherwise
 * `node.edgeId()` returns the aux node's edge ID; `undefined` if the node is not an aux node
 
-The `addEdge(s)` method accepts usual Cytoscape edge objects (plain JS objects) but with the particularity that the `source` and `target` data can refer to another edge.
+The `addEdge(s)` method(s) accepts usual Cytoscape edge objects (plain JS objects) but with the particularity that the `source` and `target` data can refer to another edge.
 
 **Important:** in general use only the `addEdge(s)` method to add edges to the graph. Don't add edges declaratively (when calling the Cytoscape constructor) or by calling `cy.add()`. Only then your edges will get an aux node, and thus are ready for being connected to other edges.
 

@@ -1,6 +1,6 @@
 // config
-let AUX_NODE_DATA
-let MAX_PASSES
+let AUX_NODE_DATA = edge => ({})
+let MAX_PASSES = 10
 
 function register (cytoscape) {
   cytoscape('core', 'edgeConnections', edgeConnections)
@@ -11,7 +11,7 @@ function register (cytoscape) {
   cytoscape('collection', 'edgeId', edgeId)
 };
 
-// expose to global cytoscape (i.e. window.cytoscape)
+// register at global Cytoscape (i.e. window.cytoscape)
 if (typeof cytoscape !== 'undefined') {
   register(cytoscape)
 }
@@ -20,8 +20,8 @@ module.exports = register
 
 function edgeConnections (config = {}) {
   // config
-  AUX_NODE_DATA = config.auxNodeData  || (edge => ({}))
-  MAX_PASSES    = config.maxPasses    || 10
+  config.auxNodeData && (AUX_NODE_DATA = config.auxNodeData)
+  config.maxPasses   && (MAX_PASSES    = config.maxPasses)
   // Note: eventHandlers operates on config
   eventHandlers(this)
 }
