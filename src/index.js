@@ -1,5 +1,4 @@
 // config
-let EDGE_SELECTOR
 let AUX_NODE_DATA
 let MAX_PASSES
 
@@ -21,7 +20,6 @@ module.exports = register
 
 function edgeConnections (config = {}) {
   // config
-  EDGE_SELECTOR = config.edgeSelector || 'edge'
   AUX_NODE_DATA = config.auxNodeData  || (edge => ({}))
   MAX_PASSES    = config.maxPasses    || 10
   // Note: eventHandlers operates on config
@@ -78,7 +76,7 @@ function resolve (edge, end, cy) {
     return false
   }
   if (ele.isEdge()) {
-    edge.data[end] = auxNodeId(ele)
+    edge.data[end] = _auxNodeId(ele)
   }
   return true
 }
@@ -111,29 +109,38 @@ function eventHandlers (cy) {
   // So the position event selector must capture both aux nodes and regular nodes.
   // FIXME: also the edge handler node is captured, but should not be a problem.
   cy.on('position', 'node', e => repositionAuxNodes(e.target))
-  cy.on('remove', EDGE_SELECTOR, e => removeAuxNode(e.target))    // remove aux node when removing edge
+  cy.on('remove', 'edge', e => removeAuxNode(e.target))    // remove aux node when removing edge
 }
 
 function repositionAuxNodes (node) {
-  node.connectedEdges(EDGE_SELECTOR).forEach(edge => {
-    const midpoint = edge.midpoint()
-    // Note: if Cytoscape can't draw the edge (a warning appears in the browser console) its midpoint is undefined
-    // (x and y are NaN). If a node is positioned to such an invalid position its canvas representation becomes corrupt
-    // (drawImage() throws "InvalidStateError: The object is in an invalid state" then).
-    if (isValidPos(midpoint)) {
-      edge.auxNode().unlock().position(midpoint).lock()
+  node.connectedEdges().forEach(edge => {
+    const auxNode = edge.auxNode()
+    if (auxNode) {
+      const midpoint = edge.midpoint()
+      // Note: if Cytoscape can't draw the edge (a warning appears in the browser console) its midpoint is undefined
+      // (x and y are NaN). If a node is positioned to such an invalid position its canvas representation becomes
+      // corrupt (drawImage() throws "InvalidStateError: The object is in an invalid state" then).
+      if (isValidPos(midpoint)) {
+        auxNode.unlock().position(midpoint).lock()
+      }
     }
   })
 }
 
 function removeAuxNode (edge) {
-  edge.auxNode().remove()
+  const auxNode = edge.auxNode()
+  auxNode && auxNode.remove()
 }
 
 /**
+ * Returns the edge's aux node.
+ *
  * Prerequisite: "this" refers to an edge.
  *
- * @return  the aux node (a one-element Cytoscape collection) that represents the given edge.
+ * @throws  Error   if called on an object that is not an edge.
+ * @throws  Error   in case of data inconsistency (edge has "auxNodeId" data but the referred node is not in the graph).
+ *
+ * @return  the edge's aux node (one-element Cytoscape collection); `undefined` if the edge has no aux node.
  */
 function auxNode () {
   const edge = this
@@ -141,24 +148,37 @@ function auxNode () {
     console.warn('auxNode() is called on', edge)
     throw Error('auxNode() is not called on an edge')
   }
-  const auxNode = edge.cy().getElementById(auxNodeId(edge))
-  if (auxNode.size() !== 1) {
-    console.warn('No aux node for edge', edge)
-    throw Error(`no aux node for edge ${edge.id()}`)
+  const auxNodeId = _auxNodeIdIfAvailable(edge)
+  if (!auxNodeId) {
+    return
+  }
+  const auxNode = edge.cy().getElementById(auxNodeId)
+  if (auxNode.empty()) {
+    console.warn('Data inconsistency: aux node of edge', edge, 'not in graph, auxNodeId', auxNodeId)
+    throw Error(`data inconsistency: aux node of edge ${edge.id()} not in graph`)
   }
   return auxNode
 }
 
 /**
- * @return  the ID (string) of the aux node of the given edge.
+ * @throws  Error   if the edge has no "auxNodeId" data.
+ *
+ * @return  the aux node ID (string) of the given edge.
  */
-function auxNodeId (edge) {
-  const auxNodeId = edge.data('auxNodeId')
+function _auxNodeId (edge) {
+  const auxNodeId = _auxNodeIdIfAvailable(edge)
   if (!auxNodeId) {
     console.warn('Edge has no "auxNodeId" data', edge)
     throw Error(`edge ${edge.id()} has no "auxNodeId" data`)
   }
   return auxNodeId
+}
+
+/**
+ * @return  the aux node ID (string) of the given edge; `undefined` if the edge has no "auxNodeId" data.
+ */
+function _auxNodeIdIfAvailable (edge) {
+  return edge.data('auxNodeId')
 }
 
 /**
@@ -171,10 +191,13 @@ function isAuxNode () {
 }
 
 /**
+ * Returns the aux node's edge ID.
+ *
  * Prerequisite: "this" refers to a node.
  *
- * @return  the ID of the edge represented by this aux node.
- *          Returns `undefined` if this is not an aux node (TODO: throw instead?).
+ * @throws  Error   if called on an object that is not a node.
+ *
+ * @return  the aux node's edge ID; `undefined` if this is not an aux node.
  */
 function edgeId () {
   const node = this
