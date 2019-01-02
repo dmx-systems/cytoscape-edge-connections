@@ -92,7 +92,7 @@ The possible config options are as follows:
 | Config option  | Description | Default |
 | -------------  | ----------- | ------- |
 | `auxNodeData`  | A function that receives an edge and returns a "data" object to be used when creating that edge's aux node. Use this option to enrich aux nodes by data, e.g. for styling. | `edge => ({})` |
-| `maxPasses`    |             | `10`           |
+| `maxPasses`    | See detail about *order* below.                   | `10`           |
 
 
 ## API
@@ -107,9 +107,10 @@ The extension adds 2 core and 3 collection methods:
 
 The `addEdge(s)` method(s) accepts usual Cytoscape edge objects (plain JS objects) but with the particularity that the `source` and `target` data can refer to another edge.
 
-**Important:** in general use only the `addEdge(s)` method to add edges to the graph. Don't add edges declaratively (when calling the Cytoscape constructor) or by calling `cy.add()`. Only then your edges will get an aux node, and thus are ready for being connected to other edges.
+**Important:** in order to get edge connectivity you must create edges programmatically, that is by calling the `cy.addEdge(s)` method(s) listed above. Only then 1) the edge will get an aux node, and thus can be the source/target of another edge, and 2) can itself have an edge at their source/target end. In contrast edges created/added the standard way (that is declaratively in the Cytoscape constructor or by calling `cy.add()`) will *not* get edge connectivity.
 
-You still can have edges without an aux node in your graph (by adding declaratively or by `cy.add()`).
+One more detail about the *order* in which to add edges: the `cy.addEdges(edges)` method finds out itself the order in which to add the given edges. There is *no* requirement a referred edge appears in the `edges` array *before* the referring edge. The only requirement is that the referred *nodes* exist in the graph already. (The "find order" process is governed by the `maxPasses` config value.) In contrast the `cy.addEdge(edge)` (singular) method requires that *both* referred elements (source and target) exist in the graph already, regardless of being node or edge.
+
 
 ## Build
 
