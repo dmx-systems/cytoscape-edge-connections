@@ -120,6 +120,14 @@ One more detail about the *order* in which to add edges: the `cy.addEdges(edges)
 
 ## Version history
 
+**0.2** -- Jan 2, 2019
+
+* Extension is general purpose (DMX application specifics removed)
+    * 2 config options can be passed to initializer: `auxNodeData`, `maxPasses`
+* Fix: aux nodes are not movable by user
+* Extended README
+* [Demo page](https://jri.github.io/cytoscape-edge-connections)
+
 **0.1** -- Dec 30, 2018
 
 * Initial version; functional
