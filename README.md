@@ -2,6 +2,9 @@ cytoscape-edge-connections
 ==========================
 
 
+![cytoscape-edge-connections](demo.png)
+
+
 ## Description
 
 This Cytoscape extension allow edges to be connected to other edges, according to the Associative Model of Data
