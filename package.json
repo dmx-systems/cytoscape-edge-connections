@@ -1,6 +1,6 @@
 {
   "name": "cytoscape-edge-connections",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A Cytoscape extension that allows edges to connect other edges, according to the Associative Model of Data",
   "main": "dist/cytoscape-edge-connections.min.js",
   "author": {

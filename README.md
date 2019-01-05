@@ -142,6 +142,10 @@ For styling aux nodes *individually* see also the `auxNodeData` config option.
 
 ## Version history
 
+**0.2.1** -- Jan 5, 2019
+
+* README: add styling hint
+
 **0.2** -- Jan 2, 2019
 
 * Extension is general purpose (DMX application specifics removed)
