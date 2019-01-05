@@ -7,16 +7,16 @@ cytoscape-edge-connections
 
 ## Description
 
-This Cytoscape extension allow edges to be connected to other edges, according to the Associative Model of Data
+This Cytoscape extension allows edges to connect other edges, according to the Associative Model of Data
 ([demo](https://jri.github.io/cytoscape-edge-connections)).
 
 This extension superimposes every edge with an auxiliary node, the "aux node". An aux node represents an edge and acts as a vehicle for connecting that edge.
 
-Note: an edge is *not* represented as 2 edges with the aux node in between. Existing edges are not structurally changed. Instead the aux node is just superimposed, and the extension cares about keeping the aux node position in-sync with the edge position. This approach has several advantages:
+Note: this extension does *not* emulate an edge by 2 edges with the aux node in the middle. Edges are not structurally changed. Instead the aux node is just superimposed, and the extension cares about keeping the aux node position in-sync with the edge position. This approach has several advantages:
 
-1. The original graph structure is not changed, and existing traversal algorithms are not required to be adapted.
-2. Cytoscape's advanced edge rendering capabilities (e.g. curved parallel edges) are leveraged.
-3. Cytoscape's layout algorithms are leveraged. Aux nodes are locked and do not participate in layout.
+1. The original graph structure is not changed, and existing Cytoscape traversal algorithms continue to work.
+2. Cytoscape's advanced edge rendering capabilities (e.g. curved parallel edges) continue to work.
+3. Cytoscape's layout algorithms continue to work. Aux nodes are locked and do not participate in layout.
 
 ## The Associative Model of Data
 
@@ -67,7 +67,7 @@ let edgeConnections = require('cytoscape-edge-connections');
 cytoscape.use(edgeConnections);     // register extension
 ```
 
-**AMD**:
+**AMD** require:
 
 ```js
 require(['cytoscape', 'cytoscape-edge-connections'], function (cytoscape, edgeConnections) {
@@ -89,10 +89,10 @@ cy.edgeConnections(config);
 Optionally you can pass a config object.  
 The possible config options are as follows:
 
-| Config option  | Description | Default |
+| Config option  | Description | Default&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
 | -------------  | ----------- | ------- |
-| `auxNodeData`  | A function that receives an edge and returns a "data" object to be used when creating that edge's aux node. Use this option to enrich aux nodes by data, e.g. for styling. | `edge => ({})` |
-| `maxPasses`    | See detail about *order* below.                   | `10`           |
+| `auxNodeData`  | A function that receives an edge and returns a "data" object used by the extension when creating that edge's aux node. Use this option to enrich aux nodes by data, e.g. for individual color styling. | `edge => ({})` |
+| `maxPasses`    | See detail about *order* below. | `10` |
 
 
 ## API
@@ -109,7 +109,29 @@ The `addEdge(s)` method(s) accepts usual Cytoscape edge objects (plain JS object
 
 **Important:** in order to get edge connectivity you must create edges programmatically, that is by calling the `cy.addEdge(s)` method(s) listed above. Only then 1) the edge will get an aux node, and thus can be the source/target of another edge, and 2) can itself have an edge at their source/target end. In contrast edges created/added the standard way (that is declaratively in the Cytoscape constructor or by calling `cy.add()`) will *not* get edge connectivity.
 
-One more detail about the *order* in which to add edges: the `cy.addEdges(edges)` method finds out itself the order in which to add the given edges. There is *no* requirement a referred edge appears in the `edges` array *before* the referring edge. The only requirement is that the referred *nodes* exist in the graph already. (The "find order" process is governed by the `maxPasses` config value.) In contrast the `cy.addEdge(edge)` (singular) method requires that *both* referred elements (source and target) exist in the graph already, regardless of being node or edge.
+One more detail about *order*: the `cy.addEdges(edges)` method finds out itself the order in which to add the given edges. There is *no* requirement a referred edge appears in the `edges` array *before* the referring edge. The only requirements are 1) the referred edges are contained in the array *somewhere*, and 2) the referred *nodes* exist in the graph already. (The "find out order" process is governed by the `maxPasses` config value.) In contrast the `cy.addEdge(edge)` (singular) method requires that *both* referred elements (source and target) exist in the graph already, regardless of being node or edge.
+
+
+## Styling
+
+For every aux node the extension stores an `edgeId` data (as returned by the `node.edgeId()` API call). You can exploit that fact for styling the aux nodes (by using a Cytoscape data selector):
+
+```js
+cytoscape({
+  style: [
+    {
+      selector: 'node[edgeId]',
+      style: {
+        // your aux node style
+        'width': 6,
+        'height': 6
+      }
+    }
+  ]
+})
+```
+
+For styling aux nodes *individually* see also the `auxNodeData` config option.
 
 
 ## Build
