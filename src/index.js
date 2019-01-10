@@ -1,36 +1,44 @@
-// config
+// default config
 let AUX_NODE_DATA = edge => ({})
 let MAX_PASSES = 10
 
-function register (cytoscape) {
-  cytoscape('core', 'edgeConnections', edgeConnections)
-  cytoscape('core', 'addEdge', addEdge)
-  cytoscape('core', 'addEdges', addEdges)
-  cytoscape('collection', 'auxNode', auxNode)
-  cytoscape('collection', 'isAuxNode', isAuxNode)
-  cytoscape('collection', 'edgeId', edgeId)
-};
+let cy
+
+module.exports = register
 
 // register at global Cytoscape (i.e. window.cytoscape)
 if (typeof cytoscape !== 'undefined') {
   register(cytoscape)
 }
 
-module.exports = register
+function register (cytoscape) {
+  cytoscape('core', 'edgeConnections', edgeConnections)
+};
 
 function edgeConnections (config = {}) {
+  cy = this
+  //
   // config
   config.auxNodeData && (AUX_NODE_DATA = config.auxNodeData)
   config.maxPasses   && (MAX_PASSES    = config.maxPasses)
-  // Note: eventHandlers operates on config
-  eventHandlers(this)
+  //
+  eventHandlers()
+  //
+  // export public API
+  return {
+    addEdge,
+    addEdges,
+    auxNode,
+    isAuxNode,
+    edgeId
+  }
 }
 
 /**
  * @param   edge    Cytoscape edge (POJO); source and target IDs may refer to another edge
  */
 function addEdge (edge) {
-  if (!_addEdge(edge, this)) {
+  if (!_addEdge(edge)) {
     console.warn('Edge can\'t be added to graph as a player does not exist', edge)
   }
 }
@@ -41,7 +49,7 @@ function addEdge (edge) {
 function addEdges (edges) {
   let pass = 0
   do {
-    edges = edges.filter(edge => !_addEdge(edge, this))
+    edges = edges.filter(edge => !_addEdge(edge))
     if (++pass === MAX_PASSES) {
       throw Error(`too many add-edges passes (limit is ${MAX_PASSES})`)
     }
@@ -54,9 +62,9 @@ function addEdges (edges) {
  *                  Source and target IDs may refer to another edge.
  *                  Source and target IDs may be strings or numbers.
  */
-function _addEdge (edge, cy) {
-  if (resolve(edge, 'source', cy) && resolve(edge, 'target', cy)) {
-    createAuxNode(cy, cy.add(edge))
+function _addEdge (edge) {
+  if (resolve(edge, 'source') && resolve(edge, 'target')) {
+    createAuxNode(cy.add(edge))
     return true
   }
 }
@@ -69,7 +77,7 @@ function _addEdge (edge, cy) {
  *
  * @return    true if the edge end could be resolved
  */
-function resolve (edge, end, cy) {
+function resolve (edge, end) {
   const id = edge.data[end]
   const ele = cy.getElementById(id.toString())
   if (ele.empty()) {
@@ -84,7 +92,7 @@ function resolve (edge, end, cy) {
 /**
  * Creates and adds an aux node that represents the given edge.
  */
-function createAuxNode (cy, edge) {
+function createAuxNode (edge) {
   const p1 = edge.source().position()
   const p2 = edge.target().position()
   const auxNode = cy.add({
@@ -104,46 +112,44 @@ function createAuxNode (cy, edge) {
   edge.data('auxNodeId', auxNode.id())    // set edge->aux node ref
 }
 
-function eventHandlers (cy) {
-  // Note: for edge connecting edges aux node position changes must cascade.
-  // So the position event selector must capture both aux nodes and regular nodes.
-  // FIXME: also the edge handler node is captured, but should not be a problem.
+function eventHandlers () {
+  // Note: for edge connecting edges aux node position changes must cascade. So the position event selector
+  // must capture both aux nodes and regular nodes.
+  // FIXME: also the edge handler (in case the cytoscape-edgehandles extension is in use) node is captured,
+  // but should not be a problem.
   cy.on('position', 'node', e => repositionAuxNodes(e.target))
   cy.on('remove', 'edge', e => removeAuxNode(e.target))    // remove aux node when removing edge
 }
 
 function repositionAuxNodes (node) {
   node.connectedEdges().forEach(edge => {
-    const auxNode = edge.auxNode()
-    if (auxNode) {
+    const _auxNode = auxNode(edge)
+    if (_auxNode) {
       const midpoint = edge.midpoint()
       // Note: if Cytoscape can't draw the edge (a warning appears in the browser console) its midpoint is undefined
       // (x and y are NaN). If a node is positioned to such an invalid position its canvas representation becomes
       // corrupt (drawImage() throws "InvalidStateError: The object is in an invalid state" then).
       if (isValidPos(midpoint)) {
-        auxNode.unlock().position(midpoint).lock()
+        _auxNode.unlock().position(midpoint).lock()
       }
     }
   })
 }
 
 function removeAuxNode (edge) {
-  const auxNode = edge.auxNode()
-  auxNode && auxNode.remove()
+  const _auxNode = auxNode(edge)
+  _auxNode && _auxNode.remove()
 }
 
 /**
  * Returns the edge's aux node.
- *
- * Prerequisite: "this" refers to an edge.
  *
  * @throws  Error   if called on an object that is not an edge.
  * @throws  Error   in case of data inconsistency (edge has "auxNodeId" data but the referred node is not in the graph).
  *
  * @return  the edge's aux node (one-element Cytoscape collection); `undefined` if the edge has no aux node.
  */
-function auxNode () {
-  const edge = this
+function auxNode (edge) {
   if (!edge || !edge.isEdge()) {
     console.warn('auxNode() is called on', edge)
     throw Error('auxNode() is not called on an edge')
@@ -182,25 +188,20 @@ function _auxNodeIdIfAvailable (edge) {
 }
 
 /**
- * Prerequisite: "this" refers to a node.
- *
  * @return  true if the node is an aux node, false otherwise.
  */
-function isAuxNode () {
-  return this.edgeId() !== undefined
+function isAuxNode (node) {
+  return edgeId(node) !== undefined
 }
 
 /**
  * Returns the aux node's edge ID.
  *
- * Prerequisite: "this" refers to a node.
- *
  * @throws  Error   if called on an object that is not a node.
  *
  * @return  the aux node's edge ID; `undefined` if this is not an aux node.
  */
-function edgeId () {
-  const node = this
+function edgeId (node) {
   if (!node || !node.isNode()) {
     console.warn('edgeId() is called on', node)
     throw Error('edgeId() is not called on a node')

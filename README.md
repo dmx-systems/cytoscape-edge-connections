@@ -89,7 +89,7 @@ cy.edgeConnections(config);
 Optionally you can pass a config object.  
 The possible config options are as follows:
 
-| Config option  | Description | Default&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+| Config option  | Description | Default&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
 | -------------  | ----------- | ------- |
 | `auxNodeData`  | A function that receives an edge and returns a "data" object used by the extension when creating that edge's aux node. Use this option to enrich aux nodes by data, e.g. for individual color styling. | `edge => ({})` |
 | `maxPasses`    | See detail about *order* below. | `10` |
