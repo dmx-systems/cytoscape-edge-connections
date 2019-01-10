@@ -109,6 +109,7 @@ function createAuxNode (edge) {
       ...AUX_NODE_DATA(edge)
     }
   }).lock()
+  // console.log("Creating aux node", auxNode.id(), auxNode.position())
   edge.data('auxNodeId', auxNode.id())    // set edge->aux node ref
 }
 
@@ -129,6 +130,7 @@ function repositionAuxNodes (node) {
       // Note: if Cytoscape can't draw the edge (a warning appears in the browser console) its midpoint is undefined
       // (x and y are NaN). If a node is positioned to such an invalid position its canvas representation becomes
       // corrupt (drawImage() throws "InvalidStateError: The object is in an invalid state" then).
+      // console.log('repositionAuxNodes', _auxNode.id(), midpoint, isValidPos(midpoint))
       if (isValidPos(midpoint)) {
         _auxNode.unlock().position(midpoint).lock()
       }
@@ -216,6 +218,9 @@ function eleId (ele) {
 }
 
 function isValidPos(pos) {
+  // Sometimes pos.x/y are NaN, sometimes undefined. (The latter happens in conjunction with a cose-bilkent
+  // layout possibly run too early, when the Cytoscape instance is not yet ready.) TODO: investigate.
   // Global isNan() coerces to number and then checks; Number.isNaN() checks immediately.
-  return !(Number.isNaN(pos.x) || Number.isNaN(pos.y))
+  // Note: Number.isNaN(undefined) === false, isNaN(undefined) === true
+  return !(isNaN(pos.x) || isNaN(pos.y))
 }
