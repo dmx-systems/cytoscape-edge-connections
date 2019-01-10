@@ -115,7 +115,7 @@ function createAuxNode (edge) {
 function eventHandlers () {
   // Note: for edge connecting edges aux node position changes must cascade. So the position event selector
   // must capture both aux nodes and regular nodes.
-  // FIXME: also the edge handler (in case the cytoscape-edgehandles extension is in use) node is captured,
+  // FIXME: also the edge handler node is captured (in case the cytoscape-edgehandles extension is in use),
   // but should not be a problem.
   cy.on('position', 'node', e => repositionAuxNodes(e.target))
   cy.on('remove', 'edge', e => removeAuxNode(e.target))    // remove aux node when removing edge
