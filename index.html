@@ -24,20 +24,20 @@
           container: document.getElementById('cy'),
           style: [
             {
-              selector: 'node[^edgeId]',
+              selector: 'node',
               style: {
                 'label': 'data(id)',
+                'width': 18,
+                'height': 18,
                 'font-size': 12,
                 'text-valign': 'bottom',
-                'text-margin-y': 3,
-                'width': 18,
-                'height': 18
+                'text-margin-y': 3
               }
             },
             {
-              selector: 'node[edgeId]',
+              selector: 'node.aux-node',
               style: {
-                'background-color': 'red',
+                'label': '',
                 'width': 6,
                 'height': 6
               }
@@ -66,8 +66,7 @@
             name: 'preset'
           }
         });
-        cy.edgeConnections()
-        cy.addEdges([
+        cy.edgeConnections().addEdges([
           {data: {id:  12, source:   1, target:  2}},
           {data: {id:  23, source:   2, target:  3}},
           {data: {id:  13, source:   3, target:  1}},
