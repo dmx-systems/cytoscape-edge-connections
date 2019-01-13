@@ -116,7 +116,10 @@ function createAuxNode (edge) {
 }
 
 function colorAuxNode (auxNode) {
-  return edge(auxNode).style('line-color')
+  // Note: between removing an edge and removing its aux node colorAuxNode() is still called.
+  // If a style mapping function returns null/undefined Cytoscape issues a warning.
+  const _edge = edge(auxNode)
+  return _edge ? _edge.style('line-color') : 'white'      // 'white' suppresses warning
 }
 
 function eventHandlers () {
@@ -209,7 +212,7 @@ function isAuxNode (node) {
  *
  * @throws  Error   if the passed object is not an aux node.
  *
- * @return  the aux node's edge
+ * @return  the aux node's edge; `undefined` if the edge is not in the graph (anymore).
  */
 function edge (auxNode) {
   const _edgeId = edgeId(auxNode)
@@ -217,7 +220,10 @@ function edge (auxNode) {
     console.warn('Not an aux node:', auxNode)
     throw Error('arg passed to edge() is not an aux node')
   }
-  return cy.getElementById(_edgeId.toString())
+  const edge = cy.getElementById(_edgeId)
+  if (edge.size()) {
+    return edge
+  }
 }
 
 /**
