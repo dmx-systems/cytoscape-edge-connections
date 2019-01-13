@@ -126,7 +126,8 @@ function eventHandlers () {
   // FIXME: also the edge handler node is captured (in case the cytoscape-edgehandles extension is in use),
   // but should not be a problem.
   cy.on('position', 'node', e => repositionAuxNodes(e.target))
-  cy.on('remove', 'edge', e => removeAuxNode(e.target))    // remove aux node when removing edge
+  cy.on('remove', 'edge', e => removeAuxNode(e.target))   // remove aux node when removing edge
+  cy.on('style', 'edge', e => cy.style().update())        // recalculate aux node style once edge style changes
 }
 
 function repositionAuxNodes (node) {
