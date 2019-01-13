@@ -33,6 +33,7 @@ function edgeConnections (config = {}) {
     addEdges,
     auxNode,
     isAuxNode,
+    edge,
     edgeId
   }
 }
@@ -117,7 +118,7 @@ function createAuxNode (edge) {
 }
 
 function colorAuxNode (auxNode) {
-  return cy.getElementById(edgeId(auxNode).toString()).style('line-color')
+  return edge(auxNode).style('line-color')
 }
 
 function eventHandlers () {
@@ -202,6 +203,22 @@ function _auxNodeIdIfAvailable (edge) {
  */
 function isAuxNode (node) {
   return edgeId(node) !== undefined
+}
+
+/**
+ * Returns the aux node's edge.
+ *
+ * @throws  Error   if the passed object is not an aux node.
+ *
+ * @return  the aux node's edge
+ */
+function edge (auxNode) {
+  const _edgeId = edgeId(auxNode)
+  if (!_edgeId) {
+    console.warn('Not an aux node:', auxNode)
+    throw Error('arg passed to edge() is not an aux node')
+  }
+  return cy.getElementById(_edgeId.toString())
 }
 
 /**
