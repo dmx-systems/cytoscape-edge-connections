@@ -19,12 +19,7 @@ function edgeConnections (config = {}) {
   //
   config.maxPasses && (MAX_PASSES = config.maxPasses)
   //
-  cy.style()
-    .selector('node.aux-node')
-    .style({
-      'background-color': colorAuxNode
-    })
-  //
+  stylesheet()
   eventHandlers()
   //
   // export public API
@@ -36,6 +31,22 @@ function edgeConnections (config = {}) {
     edgeId,
     edge
   }
+}
+
+function stylesheet () {
+  cy.style().selector('node.aux-node').style({
+    'background-color': colorAuxNode
+  })
+}
+
+function eventHandlers () {
+  // Note: for edge connecting edges aux node position changes must cascade. So the position event selector
+  // must capture both aux nodes and regular nodes.
+  // FIXME: also the edge handler node is captured (in case the cytoscape-edgehandles extension is used),
+  // but should not be a problem.
+  cy.on('position', 'node', e => repositionAuxNodes(e.target))    // reposition aux nodes once node moves
+  cy.on('remove', 'edge', e => removeAuxNode(e.target))           // remove aux node once edge is removed
+  cy.on('style', 'edge', e => cy.style().update())                // recolor aux node once edge color changes
 }
 
 /**
@@ -112,24 +123,16 @@ function createAuxNode (edge) {
     classes: 'aux-node'
   }).lock()
   // console.log("Creating aux node", auxNode.id(), auxNode.position())
-  edge.data('auxNodeId', auxNode.id())
+  edge.scratch('edgeConnections', {
+    auxNodeId: auxNode.id()
+  })
 }
 
 function colorAuxNode (auxNode) {
   // Note: between removing an edge and removing its aux node colorAuxNode() is still called.
-  // If a style mapping function returns null/undefined Cytoscape issues a warning.
+  // If a style mapping function returns null/undefined/empty string Cytoscape issues a warning.
   const _edge = edge(auxNode)
   return _edge ? _edge.style('line-color') : 'white'      // 'white' suppresses warning
-}
-
-function eventHandlers () {
-  // Note: for edge connecting edges aux node position changes must cascade. So the position event selector
-  // must capture both aux nodes and regular nodes.
-  // FIXME: also the edge handler node is captured (in case the cytoscape-edgehandles extension is used),
-  // but should not be a problem.
-  cy.on('position', 'node', e => repositionAuxNodes(e.target))    // reposition aux nodes once node moves
-  cy.on('remove', 'edge', e => removeAuxNode(e.target))           // remove aux node once edge is removed
-  cy.on('style', 'edge', e => cy.style().update())                // recolor aux node once edge color changes
 }
 
 function repositionAuxNodes (node) {
@@ -197,7 +200,9 @@ function _auxNodeId (edge) {
  * @return  the aux node ID (string) of the given edge; `undefined` if the edge has no "auxNodeId" data.
  */
 function _auxNodeIdIfAvailable (edge) {
-  return edge.data('auxNodeId')
+  // Note: not all edges have an aux node and thus a scratchpad
+  const scratch = edge.scratch('edgeConnections')
+  return scratch && scratch.auxNodeId
 }
 
 /**
@@ -221,7 +226,7 @@ function edge (auxNode) {
     throw Error('arg passed to edge() is not an aux node')
   }
   const edge = cy.getElementById(_edgeId)
-  if (edge.size()) {
+  if (!edge.empty()) {
     return edge
   }
 }
