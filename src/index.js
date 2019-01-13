@@ -18,9 +18,14 @@ function register (cytoscape) {
 function edgeConnections (config = {}) {
   cy = this
   //
-  // config
   config.auxNodeData && (AUX_NODE_DATA = config.auxNodeData)
   config.maxPasses   && (MAX_PASSES    = config.maxPasses)
+  //
+  cy.style()
+    .selector('node.aux-node')
+    .style({
+      'background-color': colorAuxNode
+    })
   //
   eventHandlers()
   //
@@ -107,10 +112,15 @@ function createAuxNode (edge) {
     data: {
       edgeId: eleId(edge),                // set aux node->edge ref
       ...AUX_NODE_DATA(edge)
-    }
+    },
+    classes: 'aux-node'
   }).lock()
   // console.log("Creating aux node", auxNode.id(), auxNode.position())
   edge.data('auxNodeId', auxNode.id())    // set edge->aux node ref
+}
+
+function colorAuxNode (auxNode) {
+  return cy.getElementById(edgeId(auxNode).toString()).style('line-color')
 }
 
 function eventHandlers () {
