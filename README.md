@@ -116,15 +116,16 @@ One more detail about *order*: the `cy.addEdges(edges)` method finds out itself 
 
 ## Styling
 
-For every aux node the extension stores an `edgeId` data (as returned by the `node.edgeId()` API call). You can exploit that fact for styling the aux nodes (by using a Cytoscape data selector):
+By default an aux node gets the same color as the edge it represents.
+
+For further styling the `aux-node` class can be used, e.g. for setting the aux node size:
 
 ```js
 cytoscape({
   style: [
     {
-      selector: 'node[edgeId]',
+      selector: 'node.aux-node',
       style: {
-        // your aux node style
         'width': 6,
         'height': 6
       }
@@ -133,13 +134,11 @@ cytoscape({
 })
 ```
 
-For styling aux nodes *individually* see also the `auxNodeData` config option.
-
 
 ## Build
 
 1. `npm install` : installs Webpack into `./node_modules`
-2. `npm run build` : builds `./src/**` into `./dist/cytoscape-edge-connections.min.js`
+2. `npm run build` : builds `./src` into `./dist/cytoscape-edge-connections.min.js`
 
 
 ## Version history

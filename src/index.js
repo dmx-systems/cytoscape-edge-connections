@@ -217,6 +217,21 @@ function isAuxNode (node) {
 }
 
 /**
+ * Returns the given aux node's edge ID (string).
+ *
+ * @throws  Error   if the given object is not a node.
+ *
+ * @return  the given aux node's edge ID (string); `undefined` if the given node is not an aux node.
+ */
+function edgeId (node) {
+  if (!node || !node.isNode()) {
+    console.error('Invalid edgeId() argument (node expected):', node)
+    throw Error('invalid edgeId() argument')
+  }
+  return node.data('edgeId')
+}
+
+/**
  * Returns the given aux node's edge.
  *
  * @throws  Error   if the given object is not an aux node.
@@ -233,21 +248,6 @@ function edge (auxNode) {
   if (!edge.empty()) {
     return edge
   }
-}
-
-/**
- * Returns the given aux node's edge ID (string).
- *
- * @throws  Error   if the given object is not a node.
- *
- * @return  the given aux node's edge ID (string); `undefined` if the given node is not an aux node.
- */
-function edgeId (node) {
-  if (!node || !node.isNode()) {
-    console.error('Invalid edgeId() argument (node expected):', node)
-    throw Error('invalid edgeId() argument')
-  }
-  return node.data('edgeId')
 }
 
 function isValidPos(pos) {
