@@ -165,7 +165,7 @@ function removeAuxNode (edge) {
  * Returns the given edge's aux node.
  *
  * @throws  Error   if the given object is not an edge.
- * @throws  Error   in case of data inconsistency (edge has "auxNodeId" data but the referred node is not in the graph).
+ * @throws  Error   in case of data inconsistency (edge has "auxNodeId" info but the referred node is not in the graph).
  *
  * @return  the given edge's aux node (one-element Cytoscape collection); `undefined` if the given edge has no aux node.
  */
@@ -178,7 +178,7 @@ function auxNode (edge) {
   if (!auxNodeId) {
     return
   }
-  const auxNode = edge.cy().getElementById(auxNodeId)
+  const auxNode = cy.getElementById(auxNodeId)
   if (auxNode.empty()) {
     console.error('Data inconsistency: aux node of edge', edge, 'not in graph, auxNodeId', auxNodeId)
     throw Error(`data inconsistency: aux node of edge ${edge.id()} not in graph`)
@@ -187,21 +187,21 @@ function auxNode (edge) {
 }
 
 /**
- * @throws  Error   if the edge has no "auxNodeId" data.
+ * @throws  Error   if the edge has no "auxNodeId" info.
  *
  * @return  the aux node ID (string) of the given edge.
  */
 function _auxNodeId (edge) {
   const auxNodeId = _auxNodeIdIfAvailable(edge)
   if (!auxNodeId) {
-    console.error('Edge has no "auxNodeId" data', edge)
-    throw Error(`edge ${edge.id()} has no "auxNodeId" data`)
+    console.error('Edge has no "auxNodeId" info', edge)
+    throw Error(`edge ${edge.id()} has no "auxNodeId" info`)
   }
   return auxNodeId
 }
 
 /**
- * @return  the aux node ID (string) of the given edge; `undefined` if the edge has no "auxNodeId" data.
+ * @return  the aux node ID (string) of the given edge; `undefined` if the edge has no "auxNodeId" info.
  */
 function _auxNodeIdIfAvailable (edge) {
   // Note: not all edges have an aux node and thus a scratchpad
@@ -251,9 +251,10 @@ function edge (auxNode) {
 }
 
 function isValidPos(pos) {
-  // Sometimes pos.x/y are NaN, sometimes undefined. (The latter happens in conjunction with a cose-bilkent
+  // Note: sometimes pos.x/y are NaN, sometimes undefined. (The latter happens in conjunction with a cose-bilkent
   // layout possibly run too early, when the Cytoscape instance is not yet ready.) TODO: investigate.
+  //
+  // JS: isNaN(undefined) === true, Number.isNaN(undefined) === false
   // Global isNan() coerces to number and then checks; Number.isNaN() checks immediately.
-  // Note: Number.isNaN(undefined) === false, isNaN(undefined) === true
   return !(isNaN(pos.x) || isNaN(pos.y))
 }

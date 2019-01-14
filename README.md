@@ -14,7 +14,7 @@ This extension superimposes every edge with an auxiliary node, the "aux node". A
 
 Note: this extension does *not* emulate an edge by 2 edges with the aux node in the middle. Edges are not structurally changed. Instead the aux node is just superimposed, and the extension cares about keeping the aux node position in-sync with the edge position. This approach has several advantages:
 
-1. The original graph structure is not changed, and existing Cytoscape traversal algorithms continue to work.
+1. The original graph structure is not changed; existing Cytoscape traversal algorithms continue to work.
 2. Cytoscape's advanced edge rendering capabilities (e.g. curved parallel edges) continue to work.
 3. Cytoscape's layout algorithms continue to work. Aux nodes are locked and do not participate in layout.
 
@@ -109,7 +109,7 @@ The object returned by `cy.edgeConnections()` has several functions available on
 
 The `addEdge(s)` method(s) accepts usual Cytoscape edge objects (plain JS objects) but with the specialty that `source` and `target` can refer to either a node or to *another edge*.
 
-**Important:** in order to get edge connectivity you must create edges programmatically, that is by calling the `cy.addEdge(s)` method(s) listed above. Only then 1) the edge will get an aux node, and thus can be the source/target of another edge, and 2) can itself have an edge at their source/target end. In contrast edges created/added the standard way (either declaratively in the Cytoscape constructor or by calling `cy.add()`) will *not* get edge connectivity. Edges with aux node and edges without aux node coexist friendly in a graph.
+**Important:** in order to get edge connectivity you must create edges programmatically, that is by calling the `cy.addEdge(s)` method(s) listed above. Only then 1) the edge will get an aux node, and thus can be the source/target of another edge, and 2) can itself have an edge at their source/target end. In contrast edges created/added the standard way (either declaratively in the Cytoscape constructor or by calling `cy.add()`) will *not* get edge connectivity. Edges with and without aux node can friendly coexist in the same graph.
 
 One more detail about *order*: the `cy.addEdges(edges)` method finds out itself the order in which to add the given edges. There is *no* requirement a referred edge appears in the `edges` array *before* the referring edge. The only requirements are 1) the referred edges are contained in the array *somewhere*, and 2) the referred *nodes* exist in the graph already. (The "find out order" process is governed by the `maxPasses` config value.) In contrast the (singular) `cy.addEdge(edge)` method requires that *both* referred elements (source and target) exist in the graph already, regardless of being node or edge.
 
