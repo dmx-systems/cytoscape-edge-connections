@@ -18,71 +18,69 @@
         right: 0;
       }
     </style>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        var cy = cytoscape({
-          container: document.getElementById('cy'),
-          style: [
-            {
-              selector: 'node',
-              style: {
-                'label': 'data(id)',
-                'width': 18,
-                'height': 18,
-                'font-size': 12,
-                'text-valign': 'bottom',
-                'text-margin-y': 3
-              }
-            },
-            {
-              selector: 'node.aux-node',
-              style: {
-                'label': '',
-                'width': 6,
-                'height': 6
-              }
-            },
-            {
-              selector: 'edge',
-              style: {
-                'line-color': 'red',
-                'curve-style': 'bezier'
-              }
-            }
-          ],
-          elements: {
-            nodes: [
-              {data: {id: 1}, position: {x: 210, y:  60}},
-              {data: {id: 2}, position: {x:  30, y:  80}},
-              {data: {id: 3}, position: {x: 100, y: 200}},
-              {data: {id: 4}, position: {x: 105, y: 120}},
-              {data: {id: 5}, position: {x: -20, y: 130}},
-              {data: {id: 6}, position: {x:  45, y: 220}},
-              {data: {id: 7}, position: {x: 250, y: 230}},
-              {data: {id: 8}, position: {x: 210, y: 150}}
-            ]
-          },
-          layout: {
-            name: 'preset'
-          }
-        });
-        cy.edgeConnections().addEdges([
-          {data: {id:  12, source:   1, target:  2}},
-          {data: {id:  23, source:   2, target:  3}},
-          {data: {id:  13, source:   3, target:  1}},
-          {data: {id:  56, source:   5, target:  6}},
-          {data: {id: 370, source:   3, target:  7}},
-          {data: {id: 371, source:   3, target:  7}},
-          {data: {id: 412, source:   4, target: 12}},
-          {data: {id: 413, source:   4, target: 13}},
-          {data: {id: 500, source:  23, target: 56}},
-          {data: {id: 837, source: 370, target:  8}}
-        ])
-      });
-    </script>
   </head>
   <body>
     <h1>cytoscape-edge-connections demo</h1>
     <div id="cy"></div>
+    <script>
+      var cy = cytoscape({
+        container: document.getElementById('cy'),
+        style: [
+          {
+            selector: 'node',
+            style: {
+              'label': 'data(id)',
+              'width': 18,
+              'height': 18,
+              'font-size': 12,
+              'text-valign': 'bottom',
+              'text-margin-y': 3
+            }
+          },
+          {
+            selector: 'node.aux-node',
+            style: {
+              'label': '',
+              'width': 6,
+              'height': 6
+            }
+          },
+          {
+            selector: 'edge',
+            style: {
+              'line-color': 'red',
+              'curve-style': 'bezier'
+            }
+          }
+        ],
+        elements: {
+          nodes: [
+            {data: {id: 1}, position: {x: 210, y:  60}},
+            {data: {id: 2}, position: {x:  30, y:  80}},
+            {data: {id: 3}, position: {x: 100, y: 200}},
+            {data: {id: 4}, position: {x: 105, y: 120}},
+            {data: {id: 5}, position: {x: -20, y: 130}},
+            {data: {id: 6}, position: {x:  45, y: 220}},
+            {data: {id: 7}, position: {x: 250, y: 230}},
+            {data: {id: 8}, position: {x: 210, y: 150}}
+          ]
+        },
+        layout: {
+          name: 'preset'
+        }
+      });
+      cy.edgeConnections().addEdges([
+        {data: {id:  12, source:   1, target:  2}},
+        {data: {id:  23, source:   2, target:  3}},
+        {data: {id:  13, source:   3, target:  1}},
+        {data: {id:  56, source:   5, target:  6}},
+        {data: {id: 370, source:   3, target:  7}},
+        {data: {id: 371, source:   3, target:  7}},
+        {data: {id: 412, source:   4, target: 12}},
+        {data: {id: 413, source:   4, target: 13}},
+        {data: {id: 500, source:  23, target: 56}},
+        {data: {id: 837, source: 370, target:  8}}
+      ])
+    </script>
   </body>
 </html>

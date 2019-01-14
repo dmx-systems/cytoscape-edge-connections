@@ -143,6 +143,18 @@ cytoscape({
 
 ## Version history
 
+**0.3.0** -- Jan 14, 2019
+
+* Improved aux node styling:
+    * An aux node gets the same color as the edge it represents automatically
+    * Aux nodes have class `aux-node`, for manual styling (`auxNodeData` config option is removed)
+* API changes:
+    * Support edges with string IDs as well
+    * New method: `edge()` returns an aux node's edge
+* Proper extension namespacing (thanks to @maxkfranz):
+    * Initializer returns API object (don't clobber Cytoscape's core and collection API)
+    * Internal: use a scratchpad to enrich edge data
+
 **0.2.1** -- Jan 5, 2019
 
 * README: add styling hint
