@@ -50,15 +50,19 @@ function eventHandlers () {
 }
 
 /**
+ * Adds the edge to the graph.
+ *
  * @param   edge    Cytoscape edge (POJO); source and target IDs may refer to another edge
  */
 function addEdge (edge) {
   if (!_addEdge(edge)) {
-    console.warn('Edge can\'t be added to graph as a player does not exist', edge)
+    console.warn(`Edge ${edge.id()} not added as source/target not in graph`, edge)
   }
 }
 
 /**
+ * Adds all edges contained in the given array to the graph.
+ *
  * @param   edges   array of Cytoscape edge (POJO); source and target IDs may refer to another edge
  */
 function addEdges (edges) {
@@ -69,7 +73,7 @@ function addEdges (edges) {
       throw Error(`too many add-edges passes (limit is ${MAX_PASSES})`)
     }
   } while (edges.length)
-  console.log(`This graph needed ${pass} add-edges passes`)
+  console.log(`Graph needed ${pass} add-edges passes`)
 }
 
 /**
@@ -158,17 +162,17 @@ function removeAuxNode (edge) {
 }
 
 /**
- * Returns the edge's aux node.
+ * Returns the given edge's aux node.
  *
- * @throws  Error   if called on an object that is not an edge.
+ * @throws  Error   if the given object is not an edge.
  * @throws  Error   in case of data inconsistency (edge has "auxNodeId" data but the referred node is not in the graph).
  *
- * @return  the edge's aux node (one-element Cytoscape collection); `undefined` if the edge has no aux node.
+ * @return  the given edge's aux node (one-element Cytoscape collection); `undefined` if the given edge has no aux node.
  */
 function auxNode (edge) {
   if (!edge || !edge.isEdge()) {
-    console.warn('auxNode() is called on', edge)
-    throw Error('auxNode() is not called on an edge')
+    console.error('Invalid auxNode() argument (edge expected):', edge)
+    throw Error('invalid auxNode() argument')
   }
   const auxNodeId = _auxNodeIdIfAvailable(edge)
   if (!auxNodeId) {
@@ -176,7 +180,7 @@ function auxNode (edge) {
   }
   const auxNode = edge.cy().getElementById(auxNodeId)
   if (auxNode.empty()) {
-    console.warn('Data inconsistency: aux node of edge', edge, 'not in graph, auxNodeId', auxNodeId)
+    console.error('Data inconsistency: aux node of edge', edge, 'not in graph, auxNodeId', auxNodeId)
     throw Error(`data inconsistency: aux node of edge ${edge.id()} not in graph`)
   }
   return auxNode
@@ -190,7 +194,7 @@ function auxNode (edge) {
 function _auxNodeId (edge) {
   const auxNodeId = _auxNodeIdIfAvailable(edge)
   if (!auxNodeId) {
-    console.warn('Edge has no "auxNodeId" data', edge)
+    console.error('Edge has no "auxNodeId" data', edge)
     throw Error(`edge ${edge.id()} has no "auxNodeId" data`)
   }
   return auxNodeId
@@ -206,24 +210,24 @@ function _auxNodeIdIfAvailable (edge) {
 }
 
 /**
- * @return  true if the node is an aux node, false otherwise.
+ * @return  `true` if the given node is an aux node, `false` otherwise.
  */
 function isAuxNode (node) {
   return edgeId(node) !== undefined
 }
 
 /**
- * Returns the aux node's edge.
+ * Returns the given aux node's edge.
  *
- * @throws  Error   if the passed object is not an aux node.
+ * @throws  Error   if the given object is not an aux node.
  *
- * @return  the aux node's edge; `undefined` if the edge is not in the graph (anymore).
+ * @return  the given aux node's edge; `undefined` if the edge is not in the graph (anymore).
  */
 function edge (auxNode) {
   const _edgeId = edgeId(auxNode)
   if (!_edgeId) {
-    console.warn('Not an aux node:', auxNode)
-    throw Error('arg passed to edge() is not an aux node')
+    console.error('Invalid edge() argument (aux node expected):', auxNode)
+    throw Error('invalid edge() argument')
   }
   const edge = cy.getElementById(_edgeId)
   if (!edge.empty()) {
@@ -232,16 +236,16 @@ function edge (auxNode) {
 }
 
 /**
- * Returns the aux node's edge ID.
+ * Returns the given aux node's edge ID (string).
  *
- * @throws  Error   if called on an object that is not a node.
+ * @throws  Error   if the given object is not a node.
  *
- * @return  the aux node's edge ID (string); `undefined` if this is not an aux node.
+ * @return  the given aux node's edge ID (string); `undefined` if the given node is not an aux node.
  */
 function edgeId (node) {
   if (!node || !node.isNode()) {
-    console.warn('edgeId() is called on', node)
-    throw Error('edgeId() is not called on a node')
+    console.error('Invalid edgeId() argument (node expected):', node)
+    throw Error('invalid edgeId() argument')
   }
   return node.data('edgeId')
 }

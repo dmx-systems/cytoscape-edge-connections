@@ -83,33 +83,35 @@ require(['cytoscape', 'cytoscape-edge-connections'], function (cytoscape, edgeCo
 You initialize the extension on the Cytoscape instance:
 
 ```js
-cy.edgeConnections(config);
+const ec = cy.edgeConnections(config);
 ```
 
 Optionally you can pass a config object.  
 The possible config options are as follows:
 
-| Config option  | Description | Default&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
-| -------------  | ----------- | ------- |
-| `auxNodeData`  | A function that receives an edge and returns a "data" object used by the extension when creating that edge's aux node. Use this option to enrich aux nodes by data, e.g. for individual color styling. | `edge => ({})` |
-| `maxPasses`    | See detail about *order* below. | `10` |
-
+| Config option  | Description                     | Default |
+| -------------  | -----------                     | ------- |
+| `maxPasses`    | See detail about *order* below. | `10`    |
 
 ## API
 
-The extension adds 2 core and 3 collection methods:
+The object returned by `cy.edgeConnections()` has several functions available on it:
 
-* `cy.addEdge(edge)` adds the edge to the graph; `source` and `target` can refer to another edge
-* `cy.addEdges(edges)` adds all the edges of an array to the graph
-* `edge.auxNode()` returns the edge's aux node; `undefined` if the edge has no aux node
-* `node.isAuxNode()` returns `true` if the node is an aux node, `false` otherwise
-* `node.edgeId()` returns the aux node's edge ID; `undefined` if the node is not an aux node
+* `addEdge(edge)` adds the edge to the graph; `source` and `target` can refer to either a node or to *another edge*
+* `addEdges(edges)` adds all edges contained in the given array to the graph
+* `auxNode(edge)` returns the given edge's aux node; `undefined` if the given edge has no aux node;
+   throws if the given object is not an edge
+* `isAuxNode(node)` returns `true` if the given node is an aux node, `false` otherwise
+* `edgeId(node)` returns the given aux node's edge ID (string); `undefined` if the given node is not an aux node;
+   throws if the given object is not a node
+* `edge(node)` returns the given aux node's edge; `undefined` if the edge is not in the graph (anymore);
+   throws if the given object is not an aux node
 
-The `addEdge(s)` method(s) accepts usual Cytoscape edge objects (plain JS objects) but with the particularity that the `source` and `target` data can refer to another edge.
+The `addEdge(s)` method(s) accepts usual Cytoscape edge objects (plain JS objects) but with the specialty that `source` and `target` can refer to either a node or to *another edge*.
 
-**Important:** in order to get edge connectivity you must create edges programmatically, that is by calling the `cy.addEdge(s)` method(s) listed above. Only then 1) the edge will get an aux node, and thus can be the source/target of another edge, and 2) can itself have an edge at their source/target end. In contrast edges created/added the standard way (that is declaratively in the Cytoscape constructor or by calling `cy.add()`) will *not* get edge connectivity.
+**Important:** in order to get edge connectivity you must create edges programmatically, that is by calling the `cy.addEdge(s)` method(s) listed above. Only then 1) the edge will get an aux node, and thus can be the source/target of another edge, and 2) can itself have an edge at their source/target end. In contrast edges created/added the standard way (either declaratively in the Cytoscape constructor or by calling `cy.add()`) will *not* get edge connectivity. Edges with aux node and edges without aux node coexist friendly in a graph.
 
-One more detail about *order*: the `cy.addEdges(edges)` method finds out itself the order in which to add the given edges. There is *no* requirement a referred edge appears in the `edges` array *before* the referring edge. The only requirements are 1) the referred edges are contained in the array *somewhere*, and 2) the referred *nodes* exist in the graph already. (The "find out order" process is governed by the `maxPasses` config value.) In contrast the `cy.addEdge(edge)` (singular) method requires that *both* referred elements (source and target) exist in the graph already, regardless of being node or edge.
+One more detail about *order*: the `cy.addEdges(edges)` method finds out itself the order in which to add the given edges. There is *no* requirement a referred edge appears in the `edges` array *before* the referring edge. The only requirements are 1) the referred edges are contained in the array *somewhere*, and 2) the referred *nodes* exist in the graph already. (The "find out order" process is governed by the `maxPasses` config value.) In contrast the (singular) `cy.addEdge(edge)` method requires that *both* referred elements (source and target) exist in the graph already, regardless of being node or edge.
 
 
 ## Styling
