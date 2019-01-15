@@ -143,6 +143,10 @@ cytoscape({
 
 ## Version history
 
+**0.3.1** -- Jan 15, 2019
+
+* Make use of Cytoscape 3.3.2 (edge point fix, https://github.com/cytoscape/cytoscape.js/issues/2250)
+
 **0.3.0** -- Jan 14, 2019
 
 * Improved aux node styling:
