@@ -112,19 +112,12 @@ function resolve (edge, end) {
  * Creates and adds an aux node that represents the given edge.
  */
 function createAuxNode (edge) {
-  const p1 = edge.source().position()
-  const p2 = edge.target().position()
   const auxNode = cy.add({
-    // FIXME: use edge.midpoint() but midpoint is undefined immediately after add()
-    // https://github.com/cytoscape/cytoscape.js/issues/2250
-    position: {
-      x: (p1.x + p2.x) / 2,
-      y: (p1.y + p2.y) / 2
-    },
+    classes: 'aux-node',
+    position: edge.midpoint(),
     data: {
       edgeId: edge.id()
-    },
-    classes: 'aux-node'
+    }
   }).lock()
   // console.log("Creating aux node", auxNode.id(), auxNode.position())
   edge.scratch('edgeConnections', {
