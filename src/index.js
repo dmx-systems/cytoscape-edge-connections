@@ -123,6 +123,7 @@ function createAuxNode (edge) {
   edge.scratch('edgeConnections', {
     auxNodeId: auxNode.id()
   })
+  repositionAuxNodesOfParallelEdges(edge)
 }
 
 function colorAuxNode (auxNode) {
@@ -133,19 +134,25 @@ function colorAuxNode (auxNode) {
 }
 
 function repositionAuxNodes (node) {
-  node.connectedEdges().forEach(edge => {
-    const _auxNode = auxNode(edge)
-    if (_auxNode) {
-      const midpoint = edge.midpoint()
-      // Note: if Cytoscape can't draw the edge (a warning appears in the browser console) its midpoint is undefined
-      // (x and y are NaN). If a node is positioned to such an invalid position its canvas representation becomes
-      // corrupt (drawImage() throws "InvalidStateError: The object is in an invalid state" then).
-      // console.log('repositionAuxNodes', _auxNode.id(), midpoint, isValidPos(midpoint))
-      if (isValidPos(midpoint)) {
-        _auxNode.unlock().position(midpoint).lock()
-      }
+  node.connectedEdges().forEach(repositionAuxNode)
+}
+
+function repositionAuxNodesOfParallelEdges (edge) {
+  edge.parallelEdges().forEach(repositionAuxNode)
+}
+
+function repositionAuxNode (edge) {
+  const _auxNode = auxNode(edge)
+  if (_auxNode) {
+    const midpoint = edge.midpoint()
+    // Note: if Cytoscape can't draw the edge (a warning appears in the browser console) its midpoint is undefined
+    // (x and y are NaN). If a node is positioned to such an invalid position its canvas representation becomes
+    // corrupt (drawImage() throws "InvalidStateError: The object is in an invalid state" then).
+    // console.log('repositionAuxNodes', _auxNode.id(), midpoint, isValidPos(midpoint))
+    if (isValidPos(midpoint)) {
+      _auxNode.unlock().position(midpoint).lock()
     }
-  })
+  }
 }
 
 function removeAuxNode (edge) {
