@@ -143,6 +143,10 @@ cytoscape({
 
 ## Version history
 
+**0.3.2** -- Jan 20, 2019
+
+* Fix: aux node position of parallel edges
+
 **0.3.1** -- Jan 15, 2019
 
 * Make use of Cytoscape 3.3.2 (edge point fix, https://github.com/cytoscape/cytoscape.js/issues/2250)
