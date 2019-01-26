@@ -143,6 +143,10 @@ cytoscape({
 
 ## Version history
 
+**0.3.3** -- Jan 26, 2019
+
+* Fix `InvalidStateError: The object is in an invalid state`
+
 **0.3.2** -- Jan 20, 2019
 
 * Fix: aux node position of parallel edges
