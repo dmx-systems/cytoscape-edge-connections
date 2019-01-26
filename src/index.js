@@ -112,9 +112,10 @@ function resolve (edge, end) {
  * Creates and adds an aux node that represents the given edge.
  */
 function createAuxNode (edge) {
+  const pos = edge.midpoint()
   const auxNode = cy.add({
     classes: 'aux-node',
-    position: edge.midpoint(),
+    position: isValidPos(pos) && pos,     // see comment at repositionAuxNode()
     data: {
       edgeId: edge.id()
     }
