@@ -37,7 +37,7 @@ http://www.sentences.com/docs/other_docs/AMD.pdf
 
 ## Dependencies
 
-* Cytoscape.js ^3.2.0
+* Cytoscape.js >=3.3.2
 
 
 ## Usage instructions
