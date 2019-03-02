@@ -73,7 +73,7 @@ function addEdges (edges) {
       throw Error(`too many add-edges passes (limit is ${MAX_PASSES})`)
     }
   } while (edges.length)
-  console.log(`Graph needed ${pass} add-edges passes`)
+  // console.log(`Graph needed ${pass} add-edges passes`)
 }
 
 /**
