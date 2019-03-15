@@ -56,7 +56,7 @@ function eventHandlers () {
  */
 function addEdge (edge) {
   if (!_addEdge(edge)) {
-    console.warn(`Edge ${edge.id()} not added as source/target not in graph`, edge)
+    console.warn(`Edge ${edge.data.id} not added as source/target not in graph`, edge)
   }
 }
 
@@ -91,7 +91,8 @@ function _addEdge (edge) {
 /**
  * Resolves an edge end. Manipulates the edge in-place.
  *
- * @param     edge    Note: for the edge's source/target IDs both ist supported, string or number
+ * @param     edge    Cytoscape edge (POJO).
+ *                    Note: for the edge's source/target IDs both is supported, string or number.
  * @param     end     the end to resolve: 'source' or 'target' (string)
  *
  * @return    true if the edge end could be resolved
