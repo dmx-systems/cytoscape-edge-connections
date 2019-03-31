@@ -145,6 +145,10 @@ cytoscape({
 
 ## Version history
 
+**0.3.5** -- Mar 31, 2019
+
+* Fix `addEdge()` warning
+
 **0.3.4** -- Mar 2, 2019
 
 * Update `package.json` and `README.md` regarding required Cytoscape version (thanks to @pmeijer)
