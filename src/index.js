@@ -167,7 +167,15 @@ function removeAuxNode (edge) {
 
 function recolorAuxNode (edge) {
   const _auxNode = auxNode(edge)
-  _auxNode && _auxNode.style().update()
+  // console.log(edge, _auxNode)
+  if (_auxNode) {
+    _auxNode.style('background-color', edge.style('line-color'))
+    // Note: the style object returned by eles.style() does not provide an update() function, in contrast to cy.style()
+    // TODO: let aux node color rely on "data"?
+    /* const style = _auxNode.style()
+    console.log(_auxNode.id(), style, cy.style)
+    style && style.update() */
+  }
 }
 
 /**
