@@ -37,7 +37,7 @@ function edgeConnections (config = {}) {
 
 function stylesheet () {
   cy.style().selector('node.aux-node').style({
-    'background-color': colorAuxNode
+    'background-color': 'data(color)'
   })
 }
 
@@ -120,7 +120,8 @@ function createAuxNode (edge) {
     classes: 'aux-node',
     position: isValidPos(pos) && pos,     // see comment at repositionAuxNode()
     data: {
-      edgeId: edge.id()
+      edgeId: edge.id(),
+      color:  edge.style('line-color')
     }
   }).lock()
   // console.log("Creating aux node", auxNode.id(), auxNode.position())
@@ -128,13 +129,6 @@ function createAuxNode (edge) {
     auxNodeId: auxNode.id()
   })
   repositionAuxNodesOfParallelEdges(edge)
-}
-
-function colorAuxNode (auxNode) {
-  // Note: between removing an edge and removing its aux node colorAuxNode() is still called.
-  // If a style mapping function returns null/undefined/empty string Cytoscape issues a warning.
-  const _edge = edge(auxNode)
-  return _edge ? _edge.style('line-color') : 'white'      // 'white' suppresses warning
 }
 
 function repositionAuxNodes (node) {
@@ -167,15 +161,7 @@ function removeAuxNode (edge) {
 
 function recolorAuxNode (edge) {
   const _auxNode = auxNode(edge)
-  // console.log(edge, _auxNode)
-  if (_auxNode) {
-    _auxNode.style('background-color', edge.style('line-color'))
-    // Note: the style object returned by eles.style() does not provide an update() function, in contrast to cy.style()
-    // TODO: let aux node color rely on "data"?
-    /* const style = _auxNode.style()
-    console.log(_auxNode.id(), style, cy.style)
-    style && style.update() */
-  }
+  _auxNode && _auxNode.data('color', edge.style('line-color'))
 }
 
 /**
