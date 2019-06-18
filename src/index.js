@@ -1,4 +1,4 @@
-console.log('cytoscape-edge-connections 2019/06/14')
+console.log('cytoscape-edge-connections 2019/06/18')
 
 // default config
 let MAX_PASSES = 10
@@ -47,7 +47,11 @@ function eventHandlers () {
   // FIXME: also the edge handler node is captured (in case the cytoscape-edgehandles extension is used),
   // but should not be a problem.
   cy.on('position', 'node', e => repositionAuxNodes(e.target))    // reposition aux nodes once node moves
-  cy.on('remove', 'edge', e => removeAuxNode(e.target))           // remove aux node once edge is removed
+  cy.on('remove', 'edge', e => {
+    const edge = e.target
+    removeAuxNode(edge)                                           // remove aux node once edge is removed
+    repositionAuxNodesOfParallelEdges(edge)
+  })
   cy.on('style', 'edge', e => recolorAuxNode(e.target))           // recolor aux node once edge color changes
 }
 
