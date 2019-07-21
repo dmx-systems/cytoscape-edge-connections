@@ -145,6 +145,13 @@ cytoscape({
 
 ## Version history
 
+**0.4.0** -- Jul 22, 2019
+
+* Optimization: aux node style recalculation
+* Refactoring: aux node recoloring
+* Fix: reposition aux nodes when removing a parallel edge
+* Change license to AGPL-3.0
+
 **0.3.5** -- Mar 31, 2019
 
 * Fix `addEdge()` warning
@@ -182,7 +189,7 @@ cytoscape({
 
 * README: add styling hint
 
-**0.2** -- Jan 2, 2019
+**0.2.0** -- Jan 2, 2019
 
 * Extension is general purpose (DMX application specifics removed)
     * 2 config options can be passed to initializer: `auxNodeData`, `maxPasses`
@@ -190,6 +197,6 @@ cytoscape({
 * Extended README
 * [Demo page](https://jri.github.io/cytoscape-edge-connections)
 
-**0.1** -- Dec 30, 2018
+**0.1.0** -- Dec 30, 2018
 
 * Initial version; functional

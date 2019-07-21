@@ -1,6 +1,6 @@
 {
   "name": "cytoscape-edge-connections",
-  "version": "0.3.5",
+  "version": "0.4.0",
   "description": "A Cytoscape extension that allows edges to connect other edges, according to the Associative Model of Data",
   "main": "src/index.js",
   "unpkg": "dist/cytoscape-edge-connections.min.js",
@@ -19,13 +19,13 @@
     "cytoscape",
     "cytoscape-extension"
   ],
-  "license": "GPL-3.0-or-later",
+  "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/jri/cytoscape-edge-connections/issues"
   },
   "homepage": "https://github.com/jri/cytoscape-edge-connections",
   "devDependencies": {
-    "webpack": "^4.29.6"
+    "webpack": "^4.36.1"
   },
   "peerDependencies": {
     "cytoscape": ">=3.3.2"
