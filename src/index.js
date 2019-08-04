@@ -1,5 +1,3 @@
-console.log('cytoscape-edge-connections 2019/06/18')
-
 // default config
 let MAX_PASSES = 10
 
@@ -76,7 +74,9 @@ function addEdges (edges) {
   do {
     edges = edges.filter(edge => !_addEdge(edge))
     if (++pass === MAX_PASSES) {
-      throw Error(`too many add-edges passes (limit is ${MAX_PASSES})`)
+      console.warn(edges.length + ' edges not added to graph due to missing source/target node (giving up after ' +
+        MAX_PASSES + ' add-edges passes)', edges)
+      break
     }
   } while (edges.length)
   // console.log(`Graph needed ${pass} add-edges passes`)

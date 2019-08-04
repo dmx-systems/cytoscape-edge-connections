@@ -150,7 +150,7 @@ cytoscape({
 * Optimization: aux node style recalculation
 * Refactoring: aux node recoloring
 * Fix: reposition aux nodes when removing a parallel edge
-* Change license to AGPL-3.0
+* Change license to `AGPL-3.0`
 
 **0.3.5** -- Mar 31, 2019
 
