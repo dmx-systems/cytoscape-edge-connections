@@ -145,6 +145,10 @@ cytoscape({
 
 ## Version history
 
+**0.4.1** -- Aug 15, 2019
+
+* Robustness: rendering of corrupt graphs; corrupt parts are logged on the console
+
 **0.4.0** -- Jul 22, 2019
 
 * Optimization: aux node style recalculation
