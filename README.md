@@ -31,7 +31,7 @@ https://link.springer.com/content/pdf/10.1057/palgrave.jdm.3240049.pdf
 
 Simon Williams -- The Associative Model Of Data (book, 284 pages)  
 *Lazy Software*, 2nd edition, 2002  
-http://www.sentences.com/docs/other_docs/AMD.pdf
+https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf
 
 ![amd-schema](img/amd-schema.png)
 ![amd-instances](img/amd-instances.png)
