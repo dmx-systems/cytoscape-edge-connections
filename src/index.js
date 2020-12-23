@@ -7,7 +7,7 @@ module.exports = register
 
 // register at global Cytoscape (i.e. window.cytoscape)
 if (typeof cytoscape !== 'undefined') {
-  register(cytoscape)
+  register(cytoscape)                                                                       /* eslint no-undef: "off" */
 }
 
 function register (cytoscape) {
@@ -257,7 +257,7 @@ function edge (auxNode) {
   }
 }
 
-function isValidPos(pos) {
+function isValidPos (pos) {
   // Note: sometimes pos.x/y are NaN, sometimes undefined. (The latter happens in conjunction with a cose-bilkent
   // layout possibly run too early, when the Cytoscape instance is not yet ready.) TODO: investigate.
   //
