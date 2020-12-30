@@ -145,6 +145,13 @@ cytoscape({
 
 ## Version history
 
+**0.4.2** -- Dec 30, 2020
+
+* Chore:
+    * Update link to "The Associative Model Of Data" book (PDF)
+    * Adapt URLs to `github.com/dmx-systems`
+    * Code run through `eslint`
+
 **0.4.1** -- Aug 15, 2019
 
 * Robustness: rendering of corrupt graphs; corrupt parts are logged on the console
