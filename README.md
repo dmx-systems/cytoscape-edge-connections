@@ -8,7 +8,7 @@ cytoscape-edge-connections
 ## Description
 
 This Cytoscape extension allows edges to connect other edges, according to the Associative Model of Data
-([demo](https://jri.github.io/cytoscape-edge-connections)).
+([demo](https://dmx-systems.github.io/cytoscape-edge-connections)).
 
 This extension superimposes every edge with an auxiliary node, the "aux node". An aux node represents an edge and acts as a vehicle for connecting that edge.
 
