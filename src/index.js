@@ -168,9 +168,11 @@ function EdgeConnections (cy, config = {}) {
    * Returns the given edge's aux node.
    *
    * @throws  Error   if the given object is not an edge.
-   * @throws  Error   in case of data inconsistency (edge has "auxNodeId" info but the referred node is not in the graph).
+   * @throws  Error   in case of data inconsistency (edge has "auxNodeId" info but the referred node is not
+   *                  in the graph).
    *
-   * @return  the given edge's aux node (one-element Cytoscape collection); `undefined` if the given edge has no aux node.
+   * @return  the given edge's aux node (one-element Cytoscape collection); `undefined` if the given edge
+   *          has no aux node.
    */
   function auxNode (edge) {
     if (!edge || !edge.isEdge()) {

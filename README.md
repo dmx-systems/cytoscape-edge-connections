@@ -145,6 +145,10 @@ cytoscape({
 
 ## Version history
 
+**0.5.0** -- Apr 18, 2023
+
+* Fix: support for multiple Cytoscape instances (thanks to @gianluca-pepe)
+
 **0.4.2** -- Dec 30, 2020
 
 * Chore:
